@@ -58,23 +58,37 @@ class MyHomePage extends StatelessWidget {
                     child: CircularProgressIndicator(),
                   );
                 }
-                return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (context, index) => ListTile(
-                    leading: CircleAvatar(
-                      child: Image.network(
-                        'https://image.tmdb.org/t/p/w92' + snapshot.data[index].posterPath ?? ''
-                      ),
-                    ),
-                    title: Text(snapshot.data[index].title ?? ''),
-                    subtitle: Text(snapshot.data[index].overview ?? ''),
-                  ),
+                return ListView(
+                  children: snapshot.data
+                      .map<Widget>((item) => ListItem(item))
+                      .toList(),
                 );
               },
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class ListItem extends StatelessWidget {
+  final item;
+  ListItem(this.item);
+  @override
+  Widget build(BuildContext context) {
+    var imageSrc;
+    if (item.posterPath != null) {
+      imageSrc = 'https://image.tmdb.org/t/p/w92${item.posterPath}';
+    } else {
+      imageSrc = '';
+    }
+    return ListTile(
+      leading: CircleAvatar(
+        child: Image.network(imageSrc),
+      ),
+      title: Text(item.title ?? ''),
+      subtitle: Text(item.overview ?? ''),
     );
   }
 }
